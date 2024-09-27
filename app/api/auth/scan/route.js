@@ -1,12 +1,21 @@
-// import { connectToDatabase } from "@/app/lib/db";
-// import User from "@/app/lib/model/user";
-// import mongoose from "mongoose";
-// import { getToken } from "next-auth/jwt";
+import { connectToDatabase } from "@/app/lib/db";
+import ScanDetail from "@/app/lib/model/scandetails";
+import { getToken } from "next-auth/jwt";
 
 export async function POST(req) {
-    // await connectToDatabase();
-
+    // Connect to the database
+    await connectToDatabase();
+    
+    // Parse the request data
     const { upc } = await req.json();
+
+    // Get the logged-in user ID using next-auth JWT
+    const token = await getToken({ req });
+    if (!token) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    }
+    
+    // Prepare the external API request details
     const username = process.env.RHINO_SCAN_USERNAME;
     const password = process.env.RHINO_SCAN_PASSWORD;
     const APIModule = process.env.RHINO_SCAN_APIMODULE;
@@ -19,6 +28,7 @@ export async function POST(req) {
     };
 
     try {
+        // Make the external API request
         const response = await fetch(url, {
             method: "POST",
             headers: headers,
@@ -33,7 +43,34 @@ export async function POST(req) {
         }
 
         const data = await response.json();
-        return new Response(JSON.stringify(data), { status: 200 });
+        
+        // Check if a record with the same userId and identifier exists
+        const existingScanDetail = await ScanDetail.findOne({ 
+            userId: token.id, 
+            identifier: data.Identifier 
+        });
+
+        if (existingScanDetail) {
+            // If record exists, increment the quantity
+            existingScanDetail.quantity += 1;
+            await existingScanDetail.save();
+            return new Response(JSON.stringify(existingScanDetail), { status: 200 });
+        } else {
+            const scanDetails = {
+                userId: token.id, 
+                title: data.Title,
+                desc: data.Desc,
+                model: data.Model,
+                prices: data.Prices,
+                images: data.Images,
+                identifier: data.Identifier,
+                quantity: 1 // Set initial quantity to 1
+            };
+
+            const newScanDetail = new ScanDetail(scanDetails);
+            await newScanDetail.save();
+            return new Response(JSON.stringify(newScanDetail), { status: 200 });
+        }
 
     } catch (error) {
         return new Response(JSON.stringify({ error: error.message }), { status: 500 });

@@ -12,4 +12,8 @@ module.exports = {
       },
     ];
   },
+  images: {
+    domains: ['*'],
+  },
 };
+

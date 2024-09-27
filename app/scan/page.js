@@ -3,6 +3,7 @@ import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Webcam from 'react-webcam';
 import jsQR from 'jsqr';
+import Navbar from '../component/navbar';
 
 const BarcodeScanner = () => {
 
@@ -94,6 +95,7 @@ const BarcodeScanner = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+            <Navbar />
             <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-3xl shadow-2xl">
                 <h2 className="text-4xl font-extrabold text-center text-gray-800">Barcode Scanner</h2>
                 <p className="text-center text-gray-500">Scan a barcode to get started</p>

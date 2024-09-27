@@ -4,6 +4,7 @@ import { signOut } from "next-auth/react";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import Navbar from "@/app/component/navbar";
 
 export default function Profile() {
   const [email, setEmail] = useState();
@@ -58,6 +59,7 @@ export default function Profile() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+      <Navbar />
       <div className="w-full max-w-3xl p-10 bg-white bg-opacity-90 rounded-3xl shadow-2xl text-center">
         {loading ? (
           shimmerEffect
