@@ -1,9 +1,18 @@
 import { connectToDatabase } from "@/app/lib/db";
 import User from "@/app/lib/model/user";
 import mongoose from "mongoose";
+import { getToken } from "next-auth/jwt";
 
 export async function POST(req) {
   const { id, name, bio, location, profileImage, email } = await req.json();
+  const token = await getToken({ req });
+  console.log('token',token)
+  if (!token) {
+    return new Response(
+      JSON.stringify({ message: "Unauthorized" }),
+      { status: 401 }
+    );
+  }
   
   try {
     await connectToDatabase();

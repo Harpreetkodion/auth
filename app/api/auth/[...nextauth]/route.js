@@ -22,7 +22,7 @@ const handler = NextAuth({
           throw new Error('No user found with this email');
         }
 
-        
+
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
           throw new Error('Invalid credentials');
@@ -47,6 +47,7 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       session.id = token.id;
+      session.access_token = token;
       return session;
     },
   },

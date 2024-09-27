@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const router = useRouter()
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ export default function RegisterPage() {
 
         if (res.status === 201) {
           const data = await res.json();
-          window.location.href = "/login";
+          router.push('/login')
           console.log('Registration successful:', data);
         } else {
           console.log('Error:', res.status);

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function EditProfile() {
   const [name, setName] = useState();
@@ -11,6 +12,7 @@ export default function EditProfile() {
   const [profileUpdated, setProfileUpdated] = useState(false);
   const [profileImage, setProfileImage] = useState("https://as1.ftcdn.net/v2/jpg/03/53/11/00/1000_F_353110097_nbpmfn9iHlxef4EDIhXB1tdTD0lcWhG9.jpg");
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
   const { id } = useParams();
 
   useEffect(() => {
@@ -74,7 +76,7 @@ export default function EditProfile() {
 
       if (response.ok) {
         setProfileUpdated(true);
-        window.location.href = `/profile/${id}`;
+        router.push(`/profile/${id}`)
       } else {
         console.error("Profile update failed.");
       }
